@@ -1,0 +1,70 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 0.75rem;
+  // background-image: linear-gradient(rgb(40, 40, 40), rgb(100, 100, 100));
+  background-color: rgb(40, 40, 40);
+}
+
+.main {
+  border: 2rem solid rgb(40, 40, 40);
+  border-radius: 2rem;
+  // box-shadow: 1rem 1rem 2rem rgba(0, 0, 0, 0.25);
+}
+
+.header {
+  height: 100px;
+  background-color: rgb(40, 40, 40);
+}
+
+.board {
+  display: grid;
+  padding: 1px;
+  border: 2px solid rgb(81, 168, 243);
+  background-color: rgb(40, 40, 40);
+  cursor: pointer;
+}
+
+.square {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgb(40, 40, 40);
+  background-color: rgb(81, 168, 243);
+  color: rgb(56, 128, 226);
+  user-select: none;
+  cursor: pointer;
+  transition: all 150ms;
+
+  &.revealed {
+    background-color: rgb(40, 40, 40);
+    color: rgb(200, 200, 200);
+  }
+}
+
+.mine {
+  background-color: rgb(40, 40, 40);
+  color: rgb(200, 200, 200);
+}
+
+.exploded {
+  background-color: red;
+}
+
+.marked {
+  color: white;
+}
+
+.marked > i {
+  pointer-events: none;
+}
