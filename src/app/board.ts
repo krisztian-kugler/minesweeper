@@ -64,7 +64,7 @@ class Board {
   }
 
   private isMine(row: number, col: number): boolean {
-    return row >= 0 && row < this.rows && col >= 0 && col < this.cols && this.squares[row][col].mine ? true : false;
+    return this.getSquare(row, col) && this.squares[row][col].mine ? true : false;
   }
 
   private addEventListeners() {
@@ -99,6 +99,10 @@ class Board {
     return this.squares[row][col];
   }
 
+  private getSquare(row: number, col: number): Square | null {
+    return row >= 0 && row < this.rows && col >= 0 && col < this.cols ? this.squares[row][col] : null;
+  }
+
   private addSquare(row: number, col: number) {
     const position: Position = { row, col };
     const mine = Math.random() > 0.85 ? true : false;
@@ -107,69 +111,21 @@ class Board {
     this.template.insertAdjacentElement("beforeend", square.template);
   }
 
+  private forEachAdjacentSquare(square: Square, callBack: Function) {}
+
   unfold(square: Square) {
     if (square.revealed) return;
-
     square.reveal();
-
     if (square.adjacentMines) return;
 
-    const top: Position = {
-      row: square.position.row - 1,
-      col: square.position.col
-    };
-    const bottom: Position = {
-      row: square.position.row + 1,
-      col: square.position.col
-    };
-    const left: Position = {
-      row: square.position.row,
-      col: square.position.col - 1
-    };
-    const right: Position = {
-      row: square.position.row,
-      col: square.position.col + 1
-    };
-    const topLeft: Position = {
-      row: square.position.row - 1,
-      col: square.position.col - 1
-    };
-    const topRight: Position = {
-      row: square.position.row - 1,
-      col: square.position.col + 1
-    };
-    const bottomLeft: Position = {
-      row: square.position.row + 1,
-      col: square.position.col - 1
-    };
-    const bottomRight: Position = {
-      row: square.position.row + 1,
-      col: square.position.col + 1
-    };
-
-    const detectMine = (row: number, col: number, callback: Function) => {
-      if (row >= 0 && row < this.rows && col >= 0 && col < this.cols) {
-        callback(this.squares[row][col]);
-      }
-    };
-
-    if (top.row >= 0 && top.row < this.rows && top.col >= 0 && top.col < this.cols)
-      this.unfold(this.squares[top.row][top.col]);
-    if (bottom.row >= 0 && bottom.row < this.rows && bottom.col >= 0 && bottom.col < this.cols)
-      this.unfold(this.squares[bottom.row][bottom.col]);
-    if (left.row >= 0 && left.row < this.rows && left.col >= 0 && left.col < this.cols)
-      this.unfold(this.squares[left.row][left.col]);
-    if (right.row >= 0 && right.row < this.rows && right.col >= 0 && right.col < this.cols)
-      this.unfold(this.squares[right.row][right.col]);
-
-    if (topLeft.row >= 0 && topLeft.row < this.rows && topLeft.col >= 0 && topLeft.col < this.cols)
-      this.unfold(this.squares[topLeft.row][topLeft.col]);
-    if (bottomLeft.row >= 0 && bottomLeft.row < this.rows && bottomLeft.col >= 0 && bottomLeft.col < this.cols)
-      this.unfold(this.squares[bottomLeft.row][bottomLeft.col]);
-    if (topRight.row >= 0 && topRight.row < this.rows && topRight.col >= 0 && topRight.col < this.cols)
-      this.unfold(this.squares[topRight.row][topRight.col]);
-    if (bottomRight.row >= 0 && bottomRight.row < this.rows && bottomRight.col >= 0 && bottomRight.col < this.cols)
-      this.unfold(this.squares[bottomRight.row][bottomRight.col]);
+    const startRow = square.position.row - 1,
+      startCol = square.position.col - 1,
+      endRow = square.position.row + 1,
+      endCol = square.position.col + 1;
+    for (let i = startCol; i <= endCol - 1; i++) if (this.getSquare(startRow, i)) this.unfold(this.squares[startRow][i]);
+    for (let i = startRow; i <= endRow - 1; i++) if (this.getSquare(i, endCol)) this.unfold(this.squares[i][endCol]);
+    for (let i = endCol; i >= startCol + 1; i--) if (this.getSquare(endRow, i)) this.unfold(this.squares[endRow][i]);
+    for (let i = endRow; i >= startRow + 1; i--) if (this.getSquare(i, startCol)) this.unfold(this.squares[i][startCol]);
   }
 
   private gameOver(square: Square) {
