@@ -9,8 +9,14 @@ class Square {
   marked = false;
   revealed = false;
   adjacentMines = 0;
+  adjacentSquares: Square[] = [];
   private flagHtml = `<i class="fas fa-flag"></i>`;
   private bombHtml = `<i class="fas fa-bomb"></i>`;
+
+  addAdjacentSquare(square: Square) {
+    this.adjacentSquares.push(square);
+    if (square.mine) this.adjacentMines++;
+  }
 
   reveal() {
     this.revealed = true;
