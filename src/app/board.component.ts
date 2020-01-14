@@ -1,13 +1,14 @@
-import Square from "./square";
+import SquareComponent from "./square.component";
 
-class Board {
+class BoardComponent extends HTMLElement {
   constructor(public cols: number = 10, public rows: number = 10) {
+    super();
     if (this.cols < 10) this.cols = 10;
     if (this.rows < 10) this.rows = 10;
     this.create();
   }
 
-  squares: Square[][] = [];
+  squares: SquareComponent[][] = [];
   template: HTMLDivElement;
   private playing = true;
 
@@ -17,7 +18,7 @@ class Board {
     this.template.style.gridTemplate = `repeat(${this.rows}, 24px) / repeat(${this.cols}, 24px)`;
 
     for (let row = 0; row < this.rows; row++) {
-      const arr: Square[] = [];
+      const arr: SquareComponent[] = [];
       for (let col = 0; col < this.cols; col++) {
         arr[col] = this.createSquare(row, col);
       }
@@ -48,7 +49,7 @@ class Board {
     this.template.innerHTML = "";
   }
 
-  private detectAdjacentSquares(square: Square) {
+  private detectAdjacentSquares(square: SquareComponent) {
     const startRow = square.position.row - 1,
       startCol = square.position.col - 1,
       endRow = square.position.row + 1,
@@ -85,36 +86,37 @@ class Board {
     square.toggleMark();
   }
 
-  private getClickedSquare(event: MouseEvent): Square {
+  private getClickedSquare(event: MouseEvent): SquareComponent {
     const row = parseInt((event.target as HTMLDivElement).dataset.row) - 1;
     const col = parseInt((event.target as HTMLDivElement).dataset.col) - 1;
     return this.squares[row][col];
   }
 
-  private getSquare(row: number, col: number): Square {
+  private getSquare(row: number, col: number): SquareComponent {
     return row >= 0 && row < this.rows && col >= 0 && col < this.cols ? this.squares[row][col] : null;
   }
 
-  private createSquare(row: number, col: number): Square {
-    const square = new Square({ row, col }, Math.random() > 0.85 ? true : false);
+  private createSquare(row: number, col: number): SquareComponent {
+    const square = new SquareComponent({ row, col }, Math.random() > 0.85 ? true : false);
     this.template.insertAdjacentElement("beforeend", square.template);
     return square;
   }
 
-  private unfold(square: Square) {
+  private unfold(square: SquareComponent) {
     if (square.revealed) return;
     square.reveal();
     if (square.adjacentMines) return;
     square.adjacentSquares.forEach(s => this.unfold(s));
   }
 
-  private gameOver(square: Square) {
+  private gameOver(square: SquareComponent) {
     this.playing = false;
     square.template.classList.add("exploded");
-    this.forEach((square: Square) => {
+    this.forEach((square: SquareComponent) => {
       if (square.mine) square.reveal();
     });
   }
 }
 
-export default Board;
+customElements.define("app-board", BoardComponent)
+export default BoardComponent;
