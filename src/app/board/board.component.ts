@@ -1,4 +1,4 @@
-import SquareComponent from "./square.component";
+import SquareComponent from "../square/square.component";
 
 class BoardComponent extends HTMLElement {
   constructor(public cols: number = 10, public rows: number = 10) {

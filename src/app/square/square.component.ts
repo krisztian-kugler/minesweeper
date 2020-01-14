@@ -1,4 +1,4 @@
-import { Position } from "./models";
+import { Position } from "../models";
 
 class SquareComponent extends HTMLElement {
   constructor(public position: Position, public mine: boolean) {
